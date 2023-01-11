@@ -151,23 +151,23 @@ if len(EXTENSION_FILTER) > 0:
     for x in fx:
         GLOBAL_EXTENSION_FILTER.append(x.strip().lower())
 
-IS_PREMIUM_USER = False
-USER_SESSION_STRING = environ.get('USER_SESSION_STRING', '')
-if len(USER_SESSION_STRING) == 0:
-    log_info("Creating client from BOT_TOKEN")
-    app = Client(name='pyrogram', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN, parse_mode=enums.ParseMode.HTML, no_updates=True)
-else:
-    log_info("Creating client from USER_SESSION_STRING")
-    app = Client(name='pyrogram', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, session_string=USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
-    with app:
-        IS_PREMIUM_USER = app.me.is_premium
+# IS_PREMIUM_USER = False
+# USER_SESSION_STRING = environ.get('USER_SESSION_STRING', '')
+# if len(USER_SESSION_STRING) == 0:
+#     log_info("Creating client from BOT_TOKEN")
+#     app = Client(name='pyrogram', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN, parse_mode=enums.ParseMode.HTML, no_updates=True)
+# else:
+#     log_info("Creating client from USER_SESSION_STRING")
+#     app = Client(name='pyrogram', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, session_string=USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
+#     with app:
+#         IS_PREMIUM_USER = app.me.is_premium
 
-RSS_USER_SESSION_STRING = environ.get('RSS_USER_SESSION_STRING', '')
-if len(RSS_USER_SESSION_STRING) == 0:
-    rss_session = ''
-else:
-    log_info("Creating client from RSS_USER_SESSION_STRING")
-    rss_session = Client(name='rss_session', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, session_string=RSS_USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
+# RSS_USER_SESSION_STRING = environ.get('RSS_USER_SESSION_STRING', '')
+# if len(RSS_USER_SESSION_STRING) == 0:
+#     rss_session = ''
+# else:
+#     log_info("Creating client from RSS_USER_SESSION_STRING")
+#     rss_session = Client(name='rss_session', api_id=TELEGRAM_API, api_hash=TELEGRAM_HASH, session_string=RSS_USER_SESSION_STRING, parse_mode=enums.ParseMode.HTML, no_updates=True)
 
 MEGA_API_KEY = environ.get('MEGA_API_KEY', '')
 if len(MEGA_API_KEY) == 0:
@@ -205,7 +205,7 @@ SEARCH_PLUGINS = environ.get('SEARCH_PLUGINS', '')
 if len(SEARCH_PLUGINS) == 0:
     SEARCH_PLUGINS = ''
 
-MAX_SPLIT_SIZE = 4194304000 if IS_PREMIUM_USER else 2097152000
+MAX_SPLIT_SIZE = 4194304000 if False else 2097152000
 
 LEECH_SPLIT_SIZE = environ.get('LEECH_SPLIT_SIZE', '')
 if len(LEECH_SPLIT_SIZE) == 0 or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE:
@@ -333,7 +333,6 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                'QUEUE_ALL': QUEUE_ALL,
                'QUEUE_DOWNLOAD': QUEUE_DOWNLOAD,
                'QUEUE_UPLOAD': QUEUE_UPLOAD,
-               'RSS_USER_SESSION_STRING': RSS_USER_SESSION_STRING,
                'RSS_CHAT_ID': RSS_CHAT_ID,
                'RSS_COMMAND': RSS_COMMAND,
                'RSS_DELAY': RSS_DELAY,
@@ -351,7 +350,6 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                'UPSTREAM_REPO': UPSTREAM_REPO,
                'UPSTREAM_BRANCH': UPSTREAM_BRANCH,
                'UPTOBOX_TOKEN': UPTOBOX_TOKEN,
-               'USER_SESSION_STRING': USER_SESSION_STRING,
                'USE_SERVICE_ACCOUNTS': USE_SERVICE_ACCOUNTS,
                'VIEW_LINK': VIEW_LINK,
                'WEB_PINCODE': WEB_PINCODE,
@@ -395,9 +393,6 @@ sleep(0.5)
 
 aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
 
-def get_client():
-    return qbClient(host="localhost", port=8090, VERIFY_WEBUI_CERTIFICATE=False, REQUESTS_ARGS={'timeout': (30, 60)})
-
 def aria2c_init():
     try:
         log_info("Initializing Aria2c")
@@ -428,8 +423,8 @@ else:
     aria2.set_global_options(a2c_glo)
 
 
-tgDefaults = Defaults(parse_mode='HTML', disable_web_page_preview=True, allow_sending_without_reply=True, run_async=True)
-updater = tgUpdater(token=BOT_TOKEN, defaults=tgDefaults, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
-bot = updater.bot
-dispatcher = updater.dispatcher
-job_queue = updater.job_queue
+# tgDefaults = Defaults(parse_mode='HTML', disable_web_page_preview=True, allow_sending_without_reply=True, run_async=True)
+# updater = tgUpdater(token=BOT_TOKEN, defaults=tgDefaults, request_kwargs={'read_timeout': 20, 'connect_timeout': 15})
+# bot = updater.bot
+# dispatcher = updater.dispatcher
+# job_queue = updater.job_queue

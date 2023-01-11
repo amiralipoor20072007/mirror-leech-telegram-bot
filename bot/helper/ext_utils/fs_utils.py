@@ -9,7 +9,7 @@ from math import ceil
 from re import split as re_split, I
 
 from .exceptions import NotSupportedExtractionArchive
-from bot import aria2, app, LOGGER, DOWNLOAD_DIR, get_client, IS_PREMIUM_USER, MAX_SPLIT_SIZE, config_dict, user_data
+from bot import aria2, app, LOGGER, DOWNLOAD_DIR, MAX_SPLIT_SIZE, config_dict, user_data
 
 ARCH_EXT = [".tar.bz2", ".tar.gz", ".bz2", ".gz", ".tar.xz", ".tar", ".tbz2", ".tgz", ".lzma2",
             ".zip", ".7z", ".z", ".rar", ".iso", ".wim", ".cab", ".apm", ".arj", ".chm",
@@ -38,31 +38,31 @@ def clean_download(path: str):
         except:
             pass
 
-def start_cleanup():
-    get_client().torrents_delete(torrent_hashes="all")
-    try:
-        rmtree(DOWNLOAD_DIR)
-    except:
-        pass
-    makedirs(DOWNLOAD_DIR)
+# def start_cleanup():
+#     get_client().torrents_delete(torrent_hashes="all")
+#     try:
+#         rmtree(DOWNLOAD_DIR)
+#     except:
+#         pass
+#     makedirs(DOWNLOAD_DIR)
 
-def clean_all():
-    aria2.remove_all(True)
-    get_client().torrents_delete(torrent_hashes="all")
-    app.stop()
-    try:
-        rmtree(DOWNLOAD_DIR)
-    except:
-        pass
+# def clean_all():
+#     aria2.remove_all(True)
+#     get_client().torrents_delete(torrent_hashes="all")
+#     app.stop()
+#     try:
+#         rmtree(DOWNLOAD_DIR)
+#     except:
+#         pass
 
-def exit_clean_up(signal, frame):
-    try:
-        LOGGER.info("Please wait, while we clean up the downloads and stop running downloads")
-        clean_all()
-        sysexit(0)
-    except KeyboardInterrupt:
-        LOGGER.warning("Force Exiting before the cleanup finishes!")
-        sysexit(1)
+# def exit_clean_up(signal, frame):
+#     try:
+#         LOGGER.info("Please wait, while we clean up the downloads and stop running downloads")
+#         clean_all()
+#         sysexit(0)
+#     except KeyboardInterrupt:
+#         LOGGER.warning("Force Exiting before the cleanup finishes!")
+#         sysexit(1)
 
 def clean_unwanted(path: str):
     LOGGER.info(f"Cleaning unwanted files/folders: {path}")

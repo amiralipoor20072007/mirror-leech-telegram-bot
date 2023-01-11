@@ -109,7 +109,7 @@ def get_progress_bar_string(status):
     p_str += '□' * (12 - cFull)
     return f"[{p_str}]"
 
-def get_readable_message():
+def get_readable_message(chat_id):
     with download_dict_lock:
         msg = ""
         if STATUS_LIMIT := config_dict['STATUS_LIMIT']:
@@ -119,29 +119,30 @@ def get_readable_message():
                 globals()['COUNT'] -= STATUS_LIMIT
                 globals()['PAGE_NO'] -= 1
         for index, download in enumerate(list(download_dict.values())[COUNT:], start=1):
-            msg += f"<b><a href='{download.message.link}'>{download.status()}</a>: </b>"
-            msg += f"<code>{escape(str(download.name()))}</code>"
-            if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
-                msg += f"\n{get_progress_bar_string(download)} {download.progress()}"
-                msg += f"\n<b>Processed:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                msg += f"\n<b>Speed:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
-                if hasattr(download, 'seeders_num'):
-                    try:
-                        msg += f"\n<b>Seeders:</b> {download.seeders_num()} | <b>Leechers:</b> {download.leechers_num()}"
-                    except:
-                        pass
-            elif download.status() == MirrorStatus.STATUS_SEEDING:
-                msg += f"\n<b>Size: </b>{download.size()}"
-                msg += f"\n<b>Speed: </b>{download.upload_speed()}"
-                msg += f" | <b>Uploaded: </b>{download.uploaded_bytes()}"
-                msg += f"\n<b>Ratio: </b>{download.ratio()}"
-                msg += f" | <b>Time: </b>{download.seeding_time()}"
-            else:
-                msg += f"\n<b>Size: </b>{download.size()}"
-            msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
-            msg += "\n\n"
-            if index == STATUS_LIMIT:
-                break
+            if int(download.listener().chat_id) == int(chat_id):
+                msg += f"<b><a href='{download.message.link}'>{download.status()}</a>: </b>"
+                msg += f"<code>{escape(str(download.name()))}</code>"
+                if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
+                    msg += f"\n{get_progress_bar_string(download)} {download.progress()}"
+                    msg += f"\n<b>Processed:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                    msg += f"\n<b>Speed:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
+                    if hasattr(download, 'seeders_num'):
+                        try:
+                            msg += f"\n<b>Seeders:</b> {download.seeders_num()} | <b>Leechers:</b> {download.leechers_num()}"
+                        except:
+                            pass
+                elif download.status() == MirrorStatus.STATUS_SEEDING:
+                    msg += f"\n<b>Size: </b>{download.size()}"
+                    msg += f"\n<b>Speed: </b>{download.upload_speed()}"
+                    msg += f" | <b>Uploaded: </b>{download.uploaded_bytes()}"
+                    msg += f"\n<b>Ratio: </b>{download.ratio()}"
+                    msg += f" | <b>Time: </b>{download.seeding_time()}"
+                else:
+                    msg += f"\n<b>Size: </b>{download.size()}"
+                msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                msg += "\n\n"
+                if index == STATUS_LIMIT:
+                    break
         if len(msg) == 0:
             return None, None
         dl_speed = 0
@@ -168,15 +169,7 @@ def get_readable_message():
         bmsg = f"<b>CPU:</b> {cpu_percent()}% | <b>FREE:</b> {get_readable_file_size(disk_usage(DOWNLOAD_DIR).free)}"
         bmsg += f"\n<b>RAM:</b> {virtual_memory().percent}% | <b>UPTIME:</b> {get_readable_time(time() - botStartTime)}"
         bmsg += f"\n<b>DL:</b> {get_readable_file_size(dl_speed)}/s | <b>UL:</b> {get_readable_file_size(up_speed)}/s"
-        if STATUS_LIMIT and tasks > STATUS_LIMIT:
-            msg += f"<b>Page:</b> {PAGE_NO}/{PAGES} | <b>Tasks:</b> {tasks}\n"
-            buttons = ButtonMaker()
-            buttons.sbutton("<<", "status pre")
-            buttons.sbutton(">>", "status nex")
-            buttons.sbutton("♻️", "status ref")
-            button = buttons.build_menu(3)
-            return msg + bmsg, button
-        return msg + bmsg, None
+        return msg + bmsg , None
 
 def turn(data):
     STATUS_LIMIT = config_dict['STATUS_LIMIT']

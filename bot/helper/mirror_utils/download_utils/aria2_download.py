@@ -1,5 +1,6 @@
 from time import sleep, time
 from os import remove, path as ospath
+import requests as req
 
 from bot import aria2, download_dict_lock, download_dict, LOGGER, config_dict, aria2_options, aria2c_global
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
@@ -7,6 +8,7 @@ from bot.helper.ext_utils.bot_utils import is_magnet, getDownloadByGid, new_thre
 from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
 from bot.helper.telegram_helper.message_utils import sendStatusMessage, sendMessage, deleteMessage, update_all_messages
 from bot.helper.ext_utils.fs_utils import get_base_name, clean_unwanted
+from bot.modules.listener import MirrorLeechListener
 
 
 @new_thread
@@ -83,7 +85,6 @@ def __onDownloadComplete(api, gid):
         LOGGER.info(f"onDownloadComplete: {download.name} - Gid: {gid}")
         if dl := getDownloadByGid(gid):
             dl.listener().onDownloadComplete()
-            api.remove([download], force=True, files=True)
 
 @new_thread
 def __onBtDownloadComplete(api, gid):
@@ -161,21 +162,13 @@ def start_listener():
                                   on_bt_download_complete=__onBtDownloadComplete,
                                   timeout=60)
 
-def add_aria2c_download(link: str, path, listener, filename, auth, ratio, seed_time):
-    args = {'dir': path, 'max-upload-limit': '1K', 'netrc-path': '/usr/src/app/.netrc'}
-    a2c_opt = {**aria2_options}
-    [a2c_opt.pop(k) for k in aria2c_global if k in aria2_options]
-    args.update(a2c_opt)
+def add_aria2c_download(link: str,chat_id, ServerHash:str, filename, auth):
+    listener = MirrorLeechListener('',ServerHash,chat_id)
+    args = {'dir': listener.dir, 'max-upload-limit': '1K', 'netrc-path': '/usr/src/app/.netrc'}
     if filename:
         args['out'] = filename
     if auth:
         args['header'] = f"authorization: {auth}"
-    if ratio:
-        args['seed-ratio'] = ratio
-    if seed_time:
-        args['seed-time'] = seed_time
-    if TORRENT_TIMEOUT := config_dict['TORRENT_TIMEOUT']:
-        args['bt-stop-timeout'] = str(TORRENT_TIMEOUT)
     if is_magnet(link):
         download = aria2.add_magnet(link, args)
     else:
@@ -183,12 +176,13 @@ def add_aria2c_download(link: str, path, listener, filename, auth, ratio, seed_t
     if download.error_message:
         error = str(download.error_message).replace('<', ' ').replace('>', ' ')
         LOGGER.info(f"Download Error: {error}")
-        return sendMessage(error, listener.bot, listener.message)
+        # return sendMessage(error, listener.bot, listener.message)
+        return req.post('url',json={'sendMessage':True,'text':error,'Hash':listener.Hash})
     with download_dict_lock:
-        download_dict[listener.uid] = AriaDownloadStatus(download.gid, listener)
+        download_dict[listener.Hash] = AriaDownloadStatus(download.gid, listener)
         LOGGER.info(f"Aria2Download started: {download.gid}")
     listener.onDownloadStart()
     if not listener.select:
-        sendStatusMessage(listener.message, listener.bot)
-
+        # sendStatusMessage(listener.message, listener.bot)
+        req.post('url',json={'sendStatusMessage':True,'Hash':listener.Hash})
 start_listener()
