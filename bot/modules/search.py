@@ -6,7 +6,7 @@ from telegram.ext import CommandHandler, CallbackQueryHandler
 
 from bot import LOGGER, config_dict
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
-from bot.helper.ext_utils.telegraph_helper import telegraph
+# from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
@@ -174,73 +174,73 @@ def __search(key, site, message, method):
     # if not method.startswith('api'):
     #     client.search_delete(search_id=search_id)
 
-def __getResult(search_results, key, message, method):
-    telegraph_content = []
-    if method == 'apirecent':
-        msg = "<h4>API Recent Results</h4>"
-    elif method == 'apisearch':
-        msg = f"<h4>API Search Result(s) For {key}</h4>"
-    elif method == 'apitrend':
-        msg = "<h4>API Trending Results</h4>"
-    else:
-        msg = f"<h4>PLUGINS Search Result(s) For {key}</h4>"
-    for index, result in enumerate(search_results, start=1):
-        if method.startswith('api'):
-            try:
-                if 'name' in result.keys():
-                     msg += f"<code><a href='{result['url']}'>{escape(result['name'])}</a></code><br>"
-                if 'torrents' in result.keys():
-                    for subres in result['torrents']:
-                        msg += f"<b>Quality: </b>{subres['quality']} | <b>Type: </b>{subres['type']} | "
-                        msg += f"<b>Size: </b>{subres['size']}<br>"
-                        if 'torrent' in subres.keys():
-                            msg += f"<a href='{subres['torrent']}'>Direct Link</a><br>"
-                        elif 'magnet' in subres.keys():
-                            msg += "<b>Share Magnet to</b> "
-                            msg += f"<a href='http://t.me/share/url?url={subres['magnet']}'>Telegram</a><br>"
-                    msg += '<br>'
-                else:
-                    msg += f"<b>Size: </b>{result['size']}<br>"
-                    try:
-                        msg += f"<b>Seeders: </b>{result['seeders']} | <b>Leechers: </b>{result['leechers']}<br>"
-                    except:
-                        pass
-                    if 'torrent' in result.keys():
-                        msg += f"<a href='{result['torrent']}'>Direct Link</a><br><br>"
-                    elif 'magnet' in result.keys():
-                        msg += "<b>Share Magnet to</b> "
-                        msg += f"<a href='http://t.me/share/url?url={quote(result['magnet'])}'>Telegram</a><br><br>"
-                    else:
-                        msg += '<br>'
-            except:
-                continue
-        else:
-            msg += f"<a href='{result.descrLink}'>{escape(result.fileName)}</a><br>"
-            msg += f"<b>Size: </b>{get_readable_file_size(result.fileSize)}<br>"
-            msg += f"<b>Seeders: </b>{result.nbSeeders} | <b>Leechers: </b>{result.nbLeechers}<br>"
-            link = result.fileUrl
-            if link.startswith('magnet:'):
-                msg += f"<b>Share Magnet to</b> <a href='http://t.me/share/url?url={quote(link)}'>Telegram</a><br><br>"
-            else:
-                msg += f"<a href='{link}'>Direct Link</a><br><br>"
+# def __getResult(search_results, key, message, method):
+#     telegraph_content = []
+#     if method == 'apirecent':
+#         msg = "<h4>API Recent Results</h4>"
+#     elif method == 'apisearch':
+#         msg = f"<h4>API Search Result(s) For {key}</h4>"
+#     elif method == 'apitrend':
+#         msg = "<h4>API Trending Results</h4>"
+#     else:
+#         msg = f"<h4>PLUGINS Search Result(s) For {key}</h4>"
+#     for index, result in enumerate(search_results, start=1):
+#         if method.startswith('api'):
+#             try:
+#                 if 'name' in result.keys():
+#                      msg += f"<code><a href='{result['url']}'>{escape(result['name'])}</a></code><br>"
+#                 if 'torrents' in result.keys():
+#                     for subres in result['torrents']:
+#                         msg += f"<b>Quality: </b>{subres['quality']} | <b>Type: </b>{subres['type']} | "
+#                         msg += f"<b>Size: </b>{subres['size']}<br>"
+#                         if 'torrent' in subres.keys():
+#                             msg += f"<a href='{subres['torrent']}'>Direct Link</a><br>"
+#                         elif 'magnet' in subres.keys():
+#                             msg += "<b>Share Magnet to</b> "
+#                             msg += f"<a href='http://t.me/share/url?url={subres['magnet']}'>Telegram</a><br>"
+#                     msg += '<br>'
+#                 else:
+#                     msg += f"<b>Size: </b>{result['size']}<br>"
+#                     try:
+#                         msg += f"<b>Seeders: </b>{result['seeders']} | <b>Leechers: </b>{result['leechers']}<br>"
+#                     except:
+#                         pass
+#                     if 'torrent' in result.keys():
+#                         msg += f"<a href='{result['torrent']}'>Direct Link</a><br><br>"
+#                     elif 'magnet' in result.keys():
+#                         msg += "<b>Share Magnet to</b> "
+#                         msg += f"<a href='http://t.me/share/url?url={quote(result['magnet'])}'>Telegram</a><br><br>"
+#                     else:
+#                         msg += '<br>'
+#             except:
+#                 continue
+#         else:
+#             msg += f"<a href='{result.descrLink}'>{escape(result.fileName)}</a><br>"
+#             msg += f"<b>Size: </b>{get_readable_file_size(result.fileSize)}<br>"
+#             msg += f"<b>Seeders: </b>{result.nbSeeders} | <b>Leechers: </b>{result.nbLeechers}<br>"
+#             link = result.fileUrl
+#             if link.startswith('magnet:'):
+#                 msg += f"<b>Share Magnet to</b> <a href='http://t.me/share/url?url={quote(link)}'>Telegram</a><br><br>"
+#             else:
+#                 msg += f"<a href='{link}'>Direct Link</a><br><br>"
 
-        if len(msg.encode('utf-8')) > 39000:
-           telegraph_content.append(msg)
-           msg = ""
+#         if len(msg.encode('utf-8')) > 39000:
+#            telegraph_content.append(msg)
+#            msg = ""
 
-        if index == TELEGRAPH_LIMIT:
-            break
+#         if index == TELEGRAPH_LIMIT:
+#             break
 
-    if msg != "":
-        telegraph_content.append(msg)
+#     if msg != "":
+#         telegraph_content.append(msg)
 
-    editMessage(f"<b>Creating</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
-    path = [telegraph.create_page(title='Mirror-leech-bot Torrent Search',
-                                  content=content)["path"] for content in telegraph_content]
-    if len(path) > 1:
-        editMessage(f"<b>Editing</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
-        telegraph.edit_telegraph(path, telegraph_content)
-    return f"https://telegra.ph/{path[0]}"
+    # editMessage(f"<b>Creating</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
+    # path = [telegraph.create_page(title='Mirror-leech-bot Torrent Search',
+    #                               content=content)["path"] for content in telegraph_content]
+    # if len(path) > 1:
+    #     editMessage(f"<b>Editing</b> {len(telegraph_content)} <b>Telegraph pages.</b>", message)
+    #     telegraph.edit_telegraph(path, telegraph_content)
+    # return f"https://telegra.ph/{path[0]}"
 
 def __api_buttons(user_id, method):
     buttons = ButtonMaker()
