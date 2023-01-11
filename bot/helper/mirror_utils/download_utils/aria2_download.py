@@ -6,7 +6,7 @@ from bot import aria2, download_dict_lock, download_dict, LOGGER, config_dict
 # from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.ext_utils.bot_utils import is_magnet, getDownloadByGid, new_thread, bt_selection_buttons
 from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
-from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage, update_all_messages
+from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage
 from bot.helper.ext_utils.fs_utils import get_base_name, clean_unwanted
 from bot.modules.listener import MirrorLeechListener
 
@@ -130,7 +130,7 @@ def __onBtDownloadComplete(api, gid):
                     download_dict[listener.uid] = AriaDownloadStatus(gid, listener, True)
                     download_dict[listener.uid].start_time = seed_start_time
                 LOGGER.info(f"Seeding started: {download.name} - Gid: {gid}")
-                update_all_messages()
+                # update_all_messages()
         else:
             api.remove([download], force=True, files=True)
 

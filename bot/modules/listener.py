@@ -5,7 +5,6 @@ from shutil import move
 from bot import Interval, aria2, DOWNLOAD_DIR, download_dict, download_dict_lock, LOGGER, DATABASE_URL, config_dict, status_reply_dict_lock
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
 from bot.helper.ext_utils.fs_utils import get_path_size
-from bot.helper.telegram_helper.message_utils import delete_all_messages
 from bot.helper.ext_utils.db_handler import DbManger
 
 
@@ -35,7 +34,7 @@ class MirrorLeechListener:
                 Interval[0].cancel()
                 Interval.clear()
             aria2.purge()
-            delete_all_messages()
+            # delete_all_messages()
         except:
             pass
 
