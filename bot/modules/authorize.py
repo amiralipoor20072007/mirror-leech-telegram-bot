@@ -1,6 +1,6 @@
 from telegram.ext import CommandHandler
 
-from bot import user_data, dispatcher, DATABASE_URL
+from bot import user_data, DATABASE_URL
 from bot.helper.telegram_helper.message_utils import sendMessage
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -85,7 +85,7 @@ unauthorize_handler = CommandHandler(BotCommands.UnAuthorizeCommand, unauthorize
 addsudo_handler = CommandHandler(BotCommands.AddSudoCommand, addSudo, filters=CustomFilters.owner_filter)
 removesudo_handler = CommandHandler(BotCommands.RmSudoCommand, removeSudo, filters=CustomFilters.owner_filter)
 
-dispatcher.add_handler(authorize_handler)
-dispatcher.add_handler(unauthorize_handler)
-dispatcher.add_handler(addsudo_handler)
-dispatcher.add_handler(removesudo_handler)
+# dispatcher.add_handler(authorize_handler)
+# dispatcher.add_handler(unauthorize_handler)
+# dispatcher.add_handler(addsudo_handler)
+# dispatcher.add_handler(removesudo_handler)

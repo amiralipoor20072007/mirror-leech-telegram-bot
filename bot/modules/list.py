@@ -1,7 +1,7 @@
 from threading import Thread
 from telegram.ext import CommandHandler, CallbackQueryHandler
 
-from bot import LOGGER, dispatcher
+from bot import LOGGER
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.telegram_helper.message_utils import sendMessage, editMessage
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -51,5 +51,5 @@ list_handler = CommandHandler(BotCommands.ListCommand, list_buttons,
                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 list_type_handler = CallbackQueryHandler(select_type, pattern="types")
 
-dispatcher.add_handler(list_handler)
-dispatcher.add_handler(list_type_handler)
+# dispatcher.add_handler(list_handler)
+# dispatcher.add_handler(list_type_handler)

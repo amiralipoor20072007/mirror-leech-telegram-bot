@@ -5,7 +5,7 @@ from os import remove, rename, path as ospath, environ
 from subprocess import run as srun, Popen
 from dotenv import load_dotenv
 
-from bot import config_dict, dispatcher, user_data, DATABASE_URL, MAX_SPLIT_SIZE, DRIVES_IDS, DRIVES_NAMES, INDEX_URLS, aria2, GLOBAL_EXTENSION_FILTER, status_reply_dict_lock, Interval, aria2_options, aria2c_global, IS_PREMIUM_USER, download_dict, qbit_options, get_client, LOGGER
+from bot import config_dict, user_data, DATABASE_URL, MAX_SPLIT_SIZE, DRIVES_IDS, DRIVES_NAMES, INDEX_URLS, aria2, GLOBAL_EXTENSION_FILTER, status_reply_dict_lock, Interval, aria2_options, aria2c_global, download_dict, qbit_options, LOGGER
 from bot.helper.telegram_helper.message_utils import sendMessage, sendFile, editMessage, update_all_messages
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -117,7 +117,7 @@ def load_config():
     if len(SEARCH_PLUGINS) == 0:
         SEARCH_PLUGINS = ''
 
-    MAX_SPLIT_SIZE = 4194304000 if IS_PREMIUM_USER else 2097152000
+    MAX_SPLIT_SIZE = 4194304000 if False else 2097152000
 
     LEECH_SPLIT_SIZE = environ.get('LEECH_SPLIT_SIZE', '')
     if len(LEECH_SPLIT_SIZE) == 0 or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE:
@@ -501,24 +501,24 @@ def edit_aria(update, context, omsg, key):
     if DATABASE_URL:
         DbManger().update_aria2(key, value)
 
-def edit_qbit(update, context, omsg, key):
-    handler_dict[omsg.chat.id] = False
-    value = update.message.text
-    if value.lower() == 'true':
-        value = True
-    elif value.lower() == 'false':
-        value = False
-    elif key == 'max_ratio':
-        value = float(value)
-    elif value.isdigit():
-        value = int(value)
-    client = get_client()
-    client.app_set_preferences({key: value})
-    qbit_options[key] = value
-    update_buttons(omsg, 'qbit')
-    update.message.delete()
-    if DATABASE_URL:
-        DbManger().update_qbittorrent(key, value)
+# def edit_qbit(update, context, omsg, key):
+#     handler_dict[omsg.chat.id] = False
+#     value = update.message.text
+#     if value.lower() == 'true':
+#         value = True
+#     elif value.lower() == 'false':
+#         value = False
+#     elif key == 'max_ratio':
+#         value = float(value)
+#     elif value.isdigit():
+#         value = int(value)
+#     client = get_client()
+#     client.app_set_preferences({key: value})
+#     qbit_options[key] = value
+#     update_buttons(omsg, 'qbit')
+#     update.message.delete()
+#     if DATABASE_URL:
+#         DbManger().update_qbittorrent(key, value)
 
 def update_private_file(update, context, omsg):
     handler_dict[omsg.chat.id] = False
@@ -696,48 +696,48 @@ def edit_bot_settings(update, context):
                     LOGGER.error(e)
         if DATABASE_URL:
             DbManger().update_aria2(data[2], '')
-    elif data[1] == 'emptyqbit':
-        query.answer()
-        handler_dict[message.chat.id] = False
-        client = get_client()
-        client.app_set_preferences({data[2]: value})
-        qbit_options[data[2]] = ''
-        update_buttons(message, 'qbit')
-        if DATABASE_URL:
-            DbManger().update_qbittorrent(data[2], '')
-    elif data[1] == 'private':
-        query.answer()
-        if handler_dict.get(message.chat.id):
-            handler_dict[message.chat.id] = False
-            sleep(0.5)
-        start_time = time()
-        handler_dict[message.chat.id] = True
-        update_buttons(message, 'private')
-        partial_fnc = partial(update_private_file, omsg=message)
-        file_handler = MessageHandler(filters=(Filters.document | Filters.text) & Filters.chat(message.chat.id) & Filters.user(user_id), callback=partial_fnc)
-        dispatcher.add_handler(file_handler)
-        while handler_dict[message.chat.id]:
-            if time() - start_time > 60:
-                handler_dict[message.chat.id] = False
-                update_buttons(message)
-        dispatcher.remove_handler(file_handler)
-    elif data[1] == 'editvar' and STATE == 'edit':
-        query.answer()
-        if handler_dict.get(message.chat.id):
-            handler_dict[message.chat.id] = False
-            sleep(0.5)
-        start_time = time()
-        handler_dict[message.chat.id] = True
-        update_buttons(message, data[2], data[1])
-        partial_fnc = partial(edit_variable, omsg=message, key=data[2])
-        value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
-                                       callback=partial_fnc)
-        dispatcher.add_handler(value_handler)
-        while handler_dict[message.chat.id]:
-            if time() - start_time > 60:
-                handler_dict[message.chat.id] = False
-                update_buttons(message, 'var')
-        dispatcher.remove_handler(value_handler)
+    # elif data[1] == 'emptyqbit':
+    #     query.answer()
+    #     handler_dict[message.chat.id] = False
+    #     client = get_client()
+    #     client.app_set_preferences({data[2]: value})
+    #     qbit_options[data[2]] = ''
+    #     update_buttons(message, 'qbit')
+    #     if DATABASE_URL:
+    #         DbManger().update_qbittorrent(data[2], '')
+    # elif data[1] == 'private':
+    #     query.answer()
+    #     if handler_dict.get(message.chat.id):
+    #         handler_dict[message.chat.id] = False
+    #         sleep(0.5)
+    #     start_time = time()
+    #     handler_dict[message.chat.id] = True
+    #     update_buttons(message, 'private')
+    #     partial_fnc = partial(update_private_file, omsg=message)
+    #     file_handler = MessageHandler(filters=(Filters.document | Filters.text) & Filters.chat(message.chat.id) & Filters.user(user_id), callback=partial_fnc)
+    #     dispatcher.add_handler(file_handler)
+    #     while handler_dict[message.chat.id]:
+    #         if time() - start_time > 60:
+    #             handler_dict[message.chat.id] = False
+    #             update_buttons(message)
+    #     dispatcher.remove_handler(file_handler)
+    # elif data[1] == 'editvar' and STATE == 'edit':
+    #     query.answer()
+    #     if handler_dict.get(message.chat.id):
+    #         handler_dict[message.chat.id] = False
+    #         sleep(0.5)
+    #     start_time = time()
+    #     handler_dict[message.chat.id] = True
+    #     update_buttons(message, data[2], data[1])
+    #     partial_fnc = partial(edit_variable, omsg=message, key=data[2])
+    #     value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
+    #                                    callback=partial_fnc)
+    #     dispatcher.add_handler(value_handler)
+    #     while handler_dict[message.chat.id]:
+    #         if time() - start_time > 60:
+    #             handler_dict[message.chat.id] = False
+    #             update_buttons(message, 'var')
+    #     dispatcher.remove_handler(value_handler)
     elif data[1] == 'editvar' and STATE == 'view':
         value = config_dict[data[2]]
         if len(str(value)) > 200:
@@ -748,23 +748,23 @@ def edit_bot_settings(update, context):
         elif value == '':
             value = None
         query.answer(text=f'{value}', show_alert=True)
-    elif data[1] == 'editaria' and (STATE == 'edit' or data[2] == 'newkey'):
-        query.answer()
-        if handler_dict.get(message.chat.id):
-            handler_dict[message.chat.id] = False
-            sleep(0.5)
-        start_time = time()
-        handler_dict[message.chat.id] = True
-        update_buttons(message, data[2], data[1])
-        partial_fnc = partial(edit_aria, omsg=message, key=data[2])
-        value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
-                                       callback=partial_fnc)
-        dispatcher.add_handler(value_handler)
-        while handler_dict[message.chat.id]:
-            if time() - start_time > 60:
-                handler_dict[message.chat.id] = False
-                update_buttons(message, 'aria')
-        dispatcher.remove_handler(value_handler)
+    # elif data[1] == 'editaria' and (STATE == 'edit' or data[2] == 'newkey'):
+    #     query.answer()
+    #     if handler_dict.get(message.chat.id):
+    #         handler_dict[message.chat.id] = False
+    #         sleep(0.5)
+    #     start_time = time()
+    #     handler_dict[message.chat.id] = True
+    #     update_buttons(message, data[2], data[1])
+    #     partial_fnc = partial(edit_aria, omsg=message, key=data[2])
+    #     value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
+    #                                    callback=partial_fnc)
+    #     dispatcher.add_handler(value_handler)
+    #     while handler_dict[message.chat.id]:
+    #         if time() - start_time > 60:
+    #             handler_dict[message.chat.id] = False
+    #             update_buttons(message, 'aria')
+    #     dispatcher.remove_handler(value_handler)
     elif data[1] == 'editaria' and STATE == 'view':
         value = aria2_options[data[2]]
         if len(value) > 200:
@@ -777,23 +777,23 @@ def edit_bot_settings(update, context):
         elif value == '':
             value = None
         query.answer(text=f'{value}', show_alert=True)
-    elif data[1] == 'editqbit' and STATE == 'edit':
-        query.answer()
-        if handler_dict.get(message.chat.id):
-            handler_dict[message.chat.id] = False
-            sleep(0.5)
-        start_time = time()
-        handler_dict[message.chat.id] = True
-        update_buttons(message, data[2], data[1])
-        partial_fnc = partial(edit_qbit, omsg=message, key=data[2])
-        value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
-                                       callback=partial_fnc)
-        dispatcher.add_handler(value_handler)
-        while handler_dict[message.chat.id]:
-            if time() - start_time > 60:
-                handler_dict[message.chat.id] = False
-                update_buttons(message, 'var')
-        dispatcher.remove_handler(value_handler)
+    # elif data[1] == 'editqbit' and STATE == 'edit':
+    #     query.answer()
+    #     if handler_dict.get(message.chat.id):
+    #         handler_dict[message.chat.id] = False
+    #         sleep(0.5)
+    #     start_time = time()
+    #     handler_dict[message.chat.id] = True
+    #     update_buttons(message, data[2], data[1])
+    #     partial_fnc = partial(edit_qbit, omsg=message, key=data[2])
+    #     value_handler = MessageHandler(filters=Filters.text & Filters.chat(message.chat.id) & Filters.user(user_id),
+    #                                    callback=partial_fnc)
+    #     dispatcher.add_handler(value_handler)
+    #     while handler_dict[message.chat.id]:
+    #         if time() - start_time > 60:
+    #             handler_dict[message.chat.id] = False
+    #             update_buttons(message, 'var')
+    #     dispatcher.remove_handler(value_handler)
     elif data[1] == 'editqbit' and STATE == 'view':
         value = qbit_options[data[2]]
         if len(str(value)) > 200:
@@ -844,5 +844,5 @@ bot_settings_handler = CommandHandler(BotCommands.BotSetCommand, bot_settings,
                                       filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
 bb_set_handler = CallbackQueryHandler(edit_bot_settings, pattern="botset")
 
-dispatcher.add_handler(bot_settings_handler)
-dispatcher.add_handler(bb_set_handler)
+# dispatcher.add_handler(bot_settings_handler)
+# dispatcher.add_handler(bb_set_handler)

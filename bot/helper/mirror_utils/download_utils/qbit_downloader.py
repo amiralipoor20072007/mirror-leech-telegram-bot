@@ -6,7 +6,7 @@ from re import search as re_search
 from os import remove
 from threading import Lock, Thread
 
-from bot import download_dict, download_dict_lock, get_client, LOGGER, QbInterval, config_dict
+from bot import download_dict, download_dict_lock, LOGGER, QbInterval, config_dict
 from bot.helper.mirror_utils.status_utils.qbit_download_status import QbDownloadStatus
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage, sendStatusMessage, update_all_messages

@@ -4,7 +4,7 @@ from html import escape
 from urllib.parse import quote
 from telegram.ext import CommandHandler, CallbackQueryHandler
 
-from bot import dispatcher, LOGGER, config_dict, get_client
+from bot import LOGGER, config_dict
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -17,32 +17,32 @@ SITES = None
 TELEGRAPH_LIMIT = 300
 
 
-def initiate_search_tools():
-    qbclient = get_client()
-    qb_plugins = qbclient.search_plugins()
-    if SEARCH_PLUGINS := config_dict['SEARCH_PLUGINS']:
-        globals()['PLUGINS'] = []
-        src_plugins = eval(SEARCH_PLUGINS)
-        if qb_plugins:
-            for plugin in qb_plugins:
-                qbclient.search_uninstall_plugin(names=plugin['name'])
-        qbclient.search_install_plugin(src_plugins)
-        qbclient.auth_log_out()
-    elif qb_plugins:
-        for plugin in qb_plugins:
-            qbclient.search_uninstall_plugin(names=plugin['name'])
-        globals()['PLUGINS'] = []
-    qbclient.auth_log_out()
+# def initiate_search_tools():
+#     qbclient = get_client()
+#     qb_plugins = qbclient.search_plugins()
+#     if SEARCH_PLUGINS := config_dict['SEARCH_PLUGINS']:
+#         globals()['PLUGINS'] = []
+#         src_plugins = eval(SEARCH_PLUGINS)
+#         if qb_plugins:
+#             for plugin in qb_plugins:
+#                 qbclient.search_uninstall_plugin(names=plugin['name'])
+#         qbclient.search_install_plugin(src_plugins)
+#         qbclient.auth_log_out()
+#     elif qb_plugins:
+#         for plugin in qb_plugins:
+#             qbclient.search_uninstall_plugin(names=plugin['name'])
+#         globals()['PLUGINS'] = []
+#     qbclient.auth_log_out()
 
-    if SEARCH_API_LINK := config_dict['SEARCH_API_LINK']:
-        global SITES
-        try:
-            res = rget(f'{SEARCH_API_LINK}/api/v1/sites').json()
-            SITES = {str(site): str(site).capitalize() for site in res['supported_sites']}
-            SITES['all'] = 'All'
-        except Exception as e:
-            LOGGER.error("Can't fetching sites from SEARCH_API_LINK make sure use latest version of API")
-            SITES = None
+#     if SEARCH_API_LINK := config_dict['SEARCH_API_LINK']:
+#         global SITES
+#         try:
+#             res = rget(f'{SEARCH_API_LINK}/api/v1/sites').json()
+#             SITES = {str(site): str(site).capitalize() for site in res['supported_sites']}
+#             SITES['all'] = 'All'
+#         except Exception as e:
+#             LOGGER.error("Can't fetching sites from SEARCH_API_LINK make sure use latest version of API")
+#             SITES = None
 
 def torser(update, context):
     user_id = update.message.from_user.id
@@ -68,8 +68,9 @@ def torser(update, context):
         button = __api_buttons(user_id, "apisearch")
         sendMessage('Choose site to search | API:', context.bot, update.message, button)
     else:
-        button = __plugin_buttons(user_id)
-        sendMessage('Choose site to search | Plugins:', context.bot, update.message, button)
+        # button = __plugin_buttons(user_id)
+        # sendMessage('Choose site to search | Plugins:', context.bot, update.message, button)
+        pass
 
 def torserbut(update, context):
     query = update.callback_query
@@ -86,9 +87,10 @@ def torserbut(update, context):
         button = __api_buttons(user_id, data[2])
         editMessage('Choose site:', message, button)
     elif data[2] == 'plugin':
-        query.answer()
-        button = __plugin_buttons(user_id)
-        editMessage('Choose site:', message, button)
+        # query.answer()
+        # button = __plugin_buttons(user_id)
+        # editMessage('Choose site:', message, button)
+        pass
     elif data[2] != "cancel":
         query.answer()
         site = data[2]
@@ -147,29 +149,30 @@ def __search(key, site, message, method):
         except Exception as e:
             return editMessage(str(e), message)
     else:
-        LOGGER.info(f"PLUGINS Searching: {key} from {site}")
-        client = get_client()
-        search = client.search_start(pattern=key, plugins=site, category='all')
-        search_id = search.id
-        while True:
-            result_status = client.search_status(search_id=search_id)
-            status = result_status[0].status
-            if status != 'Running':
-                break
-        dict_search_results = client.search_results(search_id=search_id)
-        search_results = dict_search_results.results
-        total_results = dict_search_results.total
-        if total_results == 0:
-            return editMessage(f"No result found for <i>{key}</i>\nTorrent Site:- <i>{site.capitalize()}</i>", message)
-        msg = f"<b>Found {min(total_results, TELEGRAPH_LIMIT)}</b>"
-        msg += f" <b>result(s) for <i>{key}</i>\nTorrent Site:- <i>{site.capitalize()}</i></b>"
+        # LOGGER.info(f"PLUGINS Searching: {key} from {site}")
+        # client = get_client()
+        # search = client.search_start(pattern=key, plugins=site, category='all')
+        # search_id = search.id
+        # while True:
+        #     result_status = client.search_status(search_id=search_id)
+        #     status = result_status[0].status
+        #     if status != 'Running':
+        #         break
+        # dict_search_results = client.search_results(search_id=search_id)
+        # search_results = dict_search_results.results
+        # total_results = dict_search_results.total
+        # if total_results == 0:
+        #     return editMessage(f"No result found for <i>{key}</i>\nTorrent Site:- <i>{site.capitalize()}</i>", message)
+        # msg = f"<b>Found {min(total_results, TELEGRAPH_LIMIT)}</b>"
+        # msg += f" <b>result(s) for <i>{key}</i>\nTorrent Site:- <i>{site.capitalize()}</i></b>"
+        pass
     link = __getResult(search_results, key, message, method)
     buttons = ButtonMaker()
     buttons.buildbutton("🔎 VIEW", link)
     button = buttons.build_menu(1)
     editMessage(msg, message, button)
-    if not method.startswith('api'):
-        client.search_delete(search_id=search_id)
+    # if not method.startswith('api'):
+    #     client.search_delete(search_id=search_id)
 
 def __getResult(search_results, key, message, method):
     telegraph_content = []
@@ -246,25 +249,25 @@ def __api_buttons(user_id, method):
     buttons.sbutton("Cancel", f"torser {user_id} cancel")
     return buttons.build_menu(2)
 
-def __plugin_buttons(user_id):
-    buttons = ButtonMaker()
-    if not PLUGINS:
-        qbclient = get_client()
-        pl = qbclient.search_plugins()
-        for name in pl:
-            PLUGINS.append(name['name'])
-        qbclient.auth_log_out()
-    for siteName in PLUGINS:
-        buttons.sbutton(siteName.capitalize(), f"torser {user_id} {siteName} plugin")
-    buttons.sbutton('All', f"torser {user_id} all plugin")
-    buttons.sbutton("Cancel", f"torser {user_id} cancel")
-    return buttons.build_menu(2)
+# def __plugin_buttons(user_id):
+#     buttons = ButtonMaker()
+#     if not PLUGINS:
+#         qbclient = get_client()
+#         pl = qbclient.search_plugins()
+#         for name in pl:
+#             PLUGINS.append(name['name'])
+#         qbclient.auth_log_out()
+#     for siteName in PLUGINS:
+#         buttons.sbutton(siteName.capitalize(), f"torser {user_id} {siteName} plugin")
+#     buttons.sbutton('All', f"torser {user_id} all plugin")
+#     buttons.sbutton("Cancel", f"torser {user_id} cancel")
+#     return buttons.build_menu(2)
 
-initiate_search_tools()
+# initiate_search_tools()
 
 torser_handler = CommandHandler(BotCommands.SearchCommand, torser,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 torserbut_handler = CallbackQueryHandler(torserbut, pattern="torser")
 
-dispatcher.add_handler(torser_handler)
-dispatcher.add_handler(torserbut_handler)
+# dispatcher.add_handler(torser_handler)
+# dispatcher.add_handler(torserbut_handler)

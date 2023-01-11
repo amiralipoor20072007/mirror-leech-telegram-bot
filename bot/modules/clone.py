@@ -9,7 +9,7 @@ from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage,
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, download_dict, download_dict_lock, Interval, config_dict
+from bot import  LOGGER, download_dict, download_dict_lock, Interval, config_dict
 from bot.helper.ext_utils.bot_utils import is_gdrive_link, new_thread
 
 
@@ -106,4 +106,4 @@ def cloneNode(update, context):
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode,
                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 
-dispatcher.add_handler(clone_handler)
+# dispatcher.add_handler(clone_handler)

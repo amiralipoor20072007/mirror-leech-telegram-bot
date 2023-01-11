@@ -1,7 +1,7 @@
 from telegram.ext import CommandHandler, CallbackQueryHandler
 from os import remove, path as ospath
 
-from bot import aria2, download_dict, dispatcher, download_dict_lock, OWNER_ID, user_data, LOGGER
+from bot import aria2, download_dict, download_dict_lock, OWNER_ID, user_data, LOGGER
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import sendMessage, sendStatusMessage
@@ -121,5 +121,5 @@ select_handler = CommandHandler(BotCommands.BtSelectCommand, select,
                                 filters=(CustomFilters.authorized_chat | CustomFilters.authorized_user))
 bts_handler = CallbackQueryHandler(get_confirm, pattern="btsel")
 
-dispatcher.add_handler(select_handler)
-dispatcher.add_handler(bts_handler)
+# dispatcher.add_handler(select_handler)
+# dispatcher.add_handler(bts_handler)

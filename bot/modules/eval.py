@@ -7,7 +7,7 @@ from contextlib import redirect_stdout
 
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot import LOGGER, dispatcher
+from bot import LOGGER
 
 namespaces = {}
 
@@ -115,6 +115,6 @@ eval_handler = CommandHandler(BotCommands.EvalCommand, evaluate, filters=CustomF
 exec_handler = CommandHandler(BotCommands.ExecCommand, execute, filters=CustomFilters.owner_filter)
 clear_handler = CommandHandler(BotCommands.ClearLocalsCommand, clear, filters=CustomFilters.owner_filter)
 
-dispatcher.add_handler(eval_handler)
-dispatcher.add_handler(exec_handler)
-dispatcher.add_handler(clear_handler)
+# dispatcher.add_handler(eval_handler)
+# dispatcher.add_handler(exec_handler)
+# dispatcher.add_handler(clear_handler)

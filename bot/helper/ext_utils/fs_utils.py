@@ -1,5 +1,4 @@
-from os import remove as osremove, path as ospath, mkdir, walk, listdir, rmdir, makedirs
-from sys import exit as sysexit
+from os import remove as osremove, path as ospath, mkdir, walk, listdir, rmdir
 from shutil import rmtree
 from PIL import Image
 from magic import Magic
@@ -9,7 +8,7 @@ from math import ceil
 from re import split as re_split, I
 
 from .exceptions import NotSupportedExtractionArchive
-from bot import aria2, app, LOGGER, DOWNLOAD_DIR, MAX_SPLIT_SIZE, config_dict, user_data
+from bot import LOGGER, MAX_SPLIT_SIZE, config_dict, user_data
 
 ARCH_EXT = [".tar.bz2", ".tar.gz", ".bz2", ".gz", ".tar.xz", ".tar", ".tbz2", ".tgz", ".lzma2",
             ".zip", ".7z", ".z", ".rar", ".iso", ".wim", ".cab", ".apm", ".arj", ".chm",

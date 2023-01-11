@@ -2,7 +2,7 @@ from logging import getLogger, WARNING
 from time import time
 from threading import RLock, Lock
 
-from bot import LOGGER, download_dict, download_dict_lock, app, config_dict, non_queued_dl, non_queued_up, queued_dl, queue_dict_lock
+from bot import LOGGER, download_dict, download_dict_lock, config_dict, non_queued_dl, non_queued_up, queued_dl, queue_dict_lock
 from ..status_utils.telegram_download_status import TelegramDownloadStatus
 from bot.helper.mirror_utils.status_utils.queue_status import QueueStatus
 from bot.helper.telegram_helper.message_utils import sendStatusMessage, sendMessage

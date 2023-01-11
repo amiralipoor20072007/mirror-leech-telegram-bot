@@ -3,7 +3,7 @@ from time import time
 from threading import Thread
 from telegram.ext import CommandHandler, CallbackQueryHandler
 
-from bot import dispatcher, status_reply_dict_lock, download_dict, download_dict_lock, botStartTime, DOWNLOAD_DIR, Interval, config_dict
+from bot import  status_reply_dict_lock, download_dict, download_dict_lock, botStartTime, DOWNLOAD_DIR, Interval, config_dict
 from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage, auto_delete_message, sendStatusMessage, update_all_messages
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time, turn, setInterval, new_thread
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -48,5 +48,5 @@ mirror_status_handler = CommandHandler(BotCommands.StatusCommand, mirror_status,
                                       filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 status_pages_handler = CallbackQueryHandler(status_pages, pattern="status")
 
-dispatcher.add_handler(mirror_status_handler)
-dispatcher.add_handler(status_pages_handler)
+# dispatcher.add_handler(mirror_status_handler)
+# dispatcher.add_handler(status_pages_handler)

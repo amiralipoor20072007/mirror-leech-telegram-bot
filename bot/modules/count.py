@@ -1,6 +1,6 @@
 from telegram.ext import CommandHandler
 
-from bot import dispatcher
+# from bot import dispatcher
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.telegram_helper.message_utils import deleteMessage, sendMessage
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -36,7 +36,7 @@ def countNode(update, context):
         sendMessage(msg, context.bot, update.message)
 
 
-count_handler = CommandHandler(BotCommands.CountCommand, countNode,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
+# count_handler = CommandHandler(BotCommands.CountCommand, countNode,
+#                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user)
 
-dispatcher.add_handler(count_handler)
+# dispatcher.add_handler(count_handler)

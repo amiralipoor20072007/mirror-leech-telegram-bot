@@ -8,7 +8,7 @@ from threading import RLock
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type, RetryError
 from re import search as re_search
 
-from bot import config_dict, user_data, GLOBAL_EXTENSION_FILTER, app
+from bot import config_dict, user_data, GLOBAL_EXTENSION_FILTER
 from bot.helper.ext_utils.fs_utils import take_ss, get_media_info, get_media_streams, clean_unwanted
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
 
@@ -208,14 +208,14 @@ class TgUploader:
             if self.__thumb is None and thumb is not None and ospath.lexists(thumb):
                 osremove(thumb)
 
-    def __upload_progress(self, current, total):
-        if self.__is_cancelled:
-            app.stop_transmission()
-            return
-        with self.__resource_lock:
-            chunk_size = current - self._last_uploaded
-            self._last_uploaded = current
-            self.uploaded_bytes += chunk_size
+    # def __upload_progress(self, current, total):
+    #     if self.__is_cancelled:
+    #         app.stop_transmission()
+    #         return
+    #     with self.__resource_lock:
+    #         chunk_size = current - self._last_uploaded
+    #         self._last_uploaded = current
+    #         self.uploaded_bytes += chunk_size
 
     def __user_settings(self):
         user_id = self.__listener.message.from_user.id
@@ -225,15 +225,15 @@ class TgUploader:
         if not ospath.lexists(self.__thumb):
             self.__thumb = None
 
-    def __msg_to_reply(self):
-        if DUMP_CHAT := config_dict['DUMP_CHAT']:
-            if self.__listener.isPrivate:
-                msg = self.__listener.message.text
-            else:
-                msg = self.__listener.message.link
-            self.__sent_msg = app.send_message(DUMP_CHAT, msg, disable_web_page_preview=True)
-        else:
-            self.__sent_msg = app.get_messages(self.__listener.message.chat.id, self.__listener.uid)
+    # def __msg_to_reply(self):
+    #     if DUMP_CHAT := config_dict['DUMP_CHAT']:
+    #         if self.__listener.isPrivate:
+    #             msg = self.__listener.message.text
+    #         else:
+    #             msg = self.__listener.message.link
+    #         self.__sent_msg = app.send_message(DUMP_CHAT, msg, disable_web_page_preview=True)
+    #     else:
+    #         self.__sent_msg = app.get_messages(self.__listener.message.chat.id, self.__listener.uid)
 
     def __get_input_media(self, subkey, key):
         rlist = []

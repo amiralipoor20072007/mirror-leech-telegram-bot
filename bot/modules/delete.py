@@ -1,7 +1,7 @@
 from threading import Thread
 from telegram.ext import CommandHandler
 
-from bot import dispatcher, LOGGER
+from bot import LOGGER
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -30,4 +30,4 @@ def deletefile(update, context):
 delete_handler = CommandHandler(BotCommands.DeleteCommand, deletefile,
                                 filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
 
-dispatcher.add_handler(delete_handler)
+# dispatcher.add_handler(delete_handler)
