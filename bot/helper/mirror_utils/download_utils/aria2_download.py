@@ -185,4 +185,5 @@ def add_aria2c_download(link: str,chat_id, ServerHash:str, filename, auth):
     if not listener.select:
         # sendStatusMessage(listener.message, listener.bot)
         req.post('http://5.75.233.44:5000',json={'sendStatusMessage':True,'Hash':listener.Hash})
+        print('rund')
 start_listener()

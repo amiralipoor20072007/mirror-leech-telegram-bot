@@ -66,10 +66,12 @@ class MirrorLeechListener:
         m_path = f"{self.dir}/{name}"
         size = get_path_size(m_path)
         size_str = get_readable_file_size(size)
-        rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{m_path}','Size':size_str})
+        s = rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{m_path}','Size':size_str})
+        print('rund')
 
     def onDownloadError(self, error):
-        rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'text':error,'sendMessage':True})
+        s = rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'text':error,'sendMessage':True})
+        print('rund')
         ''
 
 '''    def onUploadComplete(self, link: str, size, files, folders, typ, name):
