@@ -177,12 +177,12 @@ def add_aria2c_download(link: str,chat_id, ServerHash:str, filename, auth):
         error = str(download.error_message).replace('<', ' ').replace('>', ' ')
         LOGGER.info(f"Download Error: {error}")
         # return sendMessage(error, listener.bot, listener.message)
-        return req.post('url',json={'sendMessage':True,'text':error,'Hash':listener.Hash})
+        return req.post('http://5.75.233.44:5000',json={'sendMessage':True,'text':error,'Hash':listener.Hash})
     with download_dict_lock:
         download_dict[listener.Hash] = AriaDownloadStatus(download.gid, listener)
         LOGGER.info(f"Aria2Download started: {download.gid}")
     listener.onDownloadStart()
     if not listener.select:
         # sendStatusMessage(listener.message, listener.bot)
-        req.post('url',json={'sendStatusMessage':True,'Hash':listener.Hash})
+        req.post('http://5.75.233.44:5000',json={'sendStatusMessage':True,'Hash':listener.Hash})
 start_listener()
