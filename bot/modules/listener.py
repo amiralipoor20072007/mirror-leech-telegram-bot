@@ -55,7 +55,7 @@ class MirrorLeechListener:
                     if subdir in listdir(des_path):
                         sub_path = rename(sub_path, f"{self.dir}/{folder_name}/1-{subdir}")
                     move(sub_path, des_path)
-                del download_dict[self.uid]
+                del download_dict[self.Hash]
                 return
             download = download_dict[self.uid]
             name = str(download.name()).replace('/', '')
