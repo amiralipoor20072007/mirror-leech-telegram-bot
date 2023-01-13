@@ -45,7 +45,7 @@ class MirrorLeechListener:
     def onDownloadComplete(self):
         with download_dict_lock:
             if len(self.sameDir) > 1:
-                self.sameDir.remove(self.uid)
+                self.sameDir.remove(self.Hash)
                 folder_name = listdir(self.dir)[-1]
                 path = f"{self.dir}/{folder_name}"
                 des_path = f"{DOWNLOAD_DIR}{list(self.sameDir)[0]}/{folder_name}"
@@ -57,7 +57,7 @@ class MirrorLeechListener:
                     move(sub_path, des_path)
                 del download_dict[self.Hash]
                 return
-            download = download_dict[self.uid]
+            download = download_dict[self.Hash]
             name = str(download.name()).replace('/', '')
             gid = download.gid()
         LOGGER.info(f"Download completed: {name}")
