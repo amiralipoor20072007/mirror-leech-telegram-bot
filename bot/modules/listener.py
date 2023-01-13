@@ -70,6 +70,7 @@ class MirrorLeechListener:
 
     def onDownloadError(self, error):
         rpost('http://5.75.233.44:5000',json={'Hash':self.Hash,'text':error,'sendMessage':True})
+        ''
 
 '''    def onUploadComplete(self, link: str, size, files, folders, typ, name):
         if not self.isPrivate and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
