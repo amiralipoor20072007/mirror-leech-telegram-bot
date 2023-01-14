@@ -35,7 +35,7 @@ class Input(Resource):
             Thread(target=add_aria2c_download,args=(link,chat_id,ServerHash,filename,auth)).start()
             return
         if chat_id:
-            msg , button = get_readable_message()
+            msg , button = get_readable_message(chat_id)
             return jsonify({'msg': msg})
         
         return
