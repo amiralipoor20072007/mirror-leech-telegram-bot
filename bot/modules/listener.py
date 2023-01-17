@@ -69,6 +69,9 @@ class MirrorLeechListener:
         LOGGER.info(f'{m_path}')
         s = rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{self.chat_id}/{name}','Size':size_str})
         LOGGER.info('rund')
+        with download_dict_lock:
+            if self.Hash in download_dict.keys():
+                del download_dict[self.Hash]
 
     def onDownloadError(self, error):
         s = rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'text':error,'sendMessage':True})
