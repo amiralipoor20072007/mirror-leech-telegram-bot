@@ -76,6 +76,9 @@ class MirrorLeechListener:
     def onDownloadError(self, error):
         s = rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'text':error,'sendMessage':True})
         LOGGER.info('rund')
+        with download_dict_lock:
+            if self.Hash in download_dict.keys():
+                del download_dict[self.Hash]
         ''
 
 '''    def onUploadComplete(self, link: str, size, files, folders, typ, name):
