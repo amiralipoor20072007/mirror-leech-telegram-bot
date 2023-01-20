@@ -144,7 +144,7 @@ def get_readable_message(chat_id):
                 if index == STATUS_LIMIT:
                     break
         if len(msg) == 0:
-            return None, None
+            return 'Not Any Task yet!\nShare Bot With Your Friends!🙏', None
         dl_speed = 0
         up_speed = 0
         for download in list(download_dict.values()):
