@@ -69,7 +69,7 @@ class MirrorLeechListener:
         size_str = get_readable_file_size(size)
         LOGGER.info(f'{m_path}')
         # rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{self.chat_id}/{name}','Size':size_str})
-        self.upload(m_path,size_str)
+        self.upload(m_path,size,size_str)
 
     def onDownloadError(self, error):
         rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'text':error,'sendMessage':True})
@@ -81,12 +81,12 @@ class MirrorLeechListener:
                 del download_dict[self.Hash]
 
 
-    def upload(self,path,size):
+    def upload(self,path,size,size_str):
         with download_dict_lock:
             download_dict[self.Hash] = SplitStatus(self.name, size, self.Hash,self)
         upload = rpost('https://api.bayfiles.com/upload', files = {'file': open(path,'rb')})
         link = upload.json()["data"]["file"]["url"]["full"]
-        self.onDownloadComplete(size,link)
+        self.onDownloadComplete(size_str,link)
 
     def onUploadComplete(self,size,link):
         rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':link,'Size':size})
