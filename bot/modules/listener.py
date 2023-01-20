@@ -69,6 +69,7 @@ class MirrorLeechListener:
         size_str = get_readable_file_size(size)
         LOGGER.info(f'{m_path}')
         rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':f'https://dl.masteryxi.ga/{self.chat_id}/{name}','Size':size_str})
+        self.TaskCompleted()
         # self.upload(m_path,size,size_str)
 
     def onDownloadError(self, error):
@@ -77,8 +78,7 @@ class MirrorLeechListener:
 
     def TaskCompleted(self):
         with download_dict_lock:
-            if self.Hash in download_dict.keys():
-                del download_dict[self.Hash]
+            del download_dict[self.Hash]
 
 
     def upload(self,path,size,size_str):
