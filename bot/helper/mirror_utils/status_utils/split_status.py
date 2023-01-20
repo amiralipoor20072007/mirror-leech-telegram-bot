@@ -3,10 +3,11 @@ from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus
 
 
 class SplitStatus:
-    def __init__(self, name, size, gid):
+    def __init__(self, name, size, gid,listener):
         self.__name = name
         self.__gid = gid
         self.__size = size
+        self.__listener = listener
 
     def gid(self):
         return self.__gid
@@ -34,3 +35,6 @@ class SplitStatus:
 
     def download(self):
         return self
+
+    def listener(self):
+        return self.__listener

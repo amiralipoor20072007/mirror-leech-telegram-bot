@@ -83,7 +83,7 @@ class MirrorLeechListener:
 
     def upload(self,path,size):
         with download_dict_lock:
-            download_dict[self.Hash] = SplitStatus(self.name, size, self.Hash)
+            download_dict[self.Hash] = SplitStatus(self.name, size, self.Hash,self)
         upload = rpost('https://api.bayfiles.com/upload', files = {'file': open(path,'rb')})
         link = upload.json()["data"]["file"]["url"]["full"]
         self.onDownloadComplete(size,link)
