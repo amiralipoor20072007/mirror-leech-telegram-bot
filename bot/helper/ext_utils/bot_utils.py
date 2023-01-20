@@ -29,7 +29,7 @@ class MirrorStatus:
     STATUS_PAUSED = "Pause"
     STATUS_ARCHIVING = "Archive"
     STATUS_EXTRACTING = "Extract"
-    STATUS_SPLITTING = "Split"
+    STATUS_SPLITTING = "Upload"
     STATUS_CHECKING = "CheckUp"
     STATUS_SEEDING = "Seed"
 
@@ -130,15 +130,16 @@ def get_readable_message(chat_id):
                             msg += f"\n<b>Seeders:</b> {download.seeders_num()} | <b>Leechers:</b> {download.leechers_num()}"
                         except:
                             pass
+                    msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 elif download.status() == MirrorStatus.STATUS_SEEDING:
                     msg += f"\n<b>Size: </b>{download.size()}"
                     msg += f"\n<b>Speed: </b>{download.upload_speed()}"
                     msg += f" | <b>Uploaded: </b>{download.uploaded_bytes()}"
                     msg += f"\n<b>Ratio: </b>{download.ratio()}"
                     msg += f" | <b>Time: </b>{download.seeding_time()}"
+                    msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 else:
                     msg += f"\n<b>Size: </b>{download.size()}"
-                msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if index == STATUS_LIMIT:
                     break

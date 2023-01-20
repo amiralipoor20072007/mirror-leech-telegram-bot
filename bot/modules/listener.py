@@ -6,6 +6,7 @@ from bot import Interval, aria2, DOWNLOAD_DIR, download_dict, download_dict_lock
 from bot.helper.ext_utils.bot_utils import get_readable_file_size
 from bot.helper.ext_utils.fs_utils import get_path_size
 from bot.helper.ext_utils.db_handler import DbManger
+from bot.helper.mirror_utils.status_utils.split_status import SplitStatus
 
 
 class MirrorLeechListener:
@@ -58,30 +59,40 @@ class MirrorLeechListener:
                 del download_dict[self.Hash]
                 return
             download = download_dict[self.Hash]
-            name = str(download.name()).replace('/', '')
+            self.name = name = str(download.name()).replace('/', '')
             gid = download.gid()
         LOGGER.info(f"Download completed: {name}")
         if name == "None" or self.isQbit or not ospath.exists(f"{self.dir}/{name}"):
-            name = listdir(self.dir)[-1]
-        m_path = f"{self.dir}/{name}"
+            self.name = name = listdir(self.dir)[-1]
+        m_path = f"{self.dir}/{self.name}"
         size = get_path_size(m_path)
         size_str = get_readable_file_size(size)
         LOGGER.info(f'{m_path}')
-        s = rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{self.chat_id}/{name}','Size':size_str})
-        LOGGER.info('rund')
-        with download_dict_lock:
-            if self.Hash in download_dict.keys():
-                del download_dict[self.Hash]
+        # rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':f'http://45.159.149.18/{self.chat_id}/{name}','Size':size_str})
+        self.upload(m_path,size_str)
 
     def onDownloadError(self, error):
-        s = rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'text':error,'sendMessage':True})
-        LOGGER.info('rund')
+        rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'text':error,'sendMessage':True})
+        self.TaskCompleted()
+
+    def TaskCompleted(self):
         with download_dict_lock:
             if self.Hash in download_dict.keys():
                 del download_dict[self.Hash]
-        ''
 
-'''    def onUploadComplete(self, link: str, size, files, folders, typ, name):
+
+    def upload(self,path,size):
+        with download_dict_lock:
+            download_dict[self.Hash] = SplitStatus(self.name, size, self.Hash)
+        upload = rpost('https://api.bayfiles.com/upload', files = {'file': open(path,'rb')})
+        link = upload.json()["data"]["file"]["url"]["full"]
+        self.onDownloadComplete(size,link)
+
+    def onUploadComplete(self,size,link):
+        rpost('http://masteryxi.ga:2052',json={'Hash':self.Hash,'Link':link,'Size':size})
+        self.TaskCompleted()
+
+        '''
         if not self.isPrivate and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             DbManger().rm_complete_task(self.message.link)
         msg = f"<b>Name: </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"

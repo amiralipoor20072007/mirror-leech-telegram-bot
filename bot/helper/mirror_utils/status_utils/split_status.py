@@ -3,12 +3,10 @@ from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus
 
 
 class SplitStatus:
-    def __init__(self, name, size, gid, listener):
+    def __init__(self, name, size, gid):
         self.__name = name
         self.__gid = gid
         self.__size = size
-        self.__listener = listener
-        self.message = listener.message
 
     def gid(self):
         return self.__gid
@@ -36,9 +34,3 @@ class SplitStatus:
 
     def download(self):
         return self
-
-    def cancel_download(self):
-        LOGGER.info(f'Cancelling Split: {self.__name}')
-        if self.__listener.suproc is not None:
-            self.__listener.suproc.kill()
-        self.__listener.onUploadError('splitting stopped by user!')
